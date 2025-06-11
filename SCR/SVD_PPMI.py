@@ -30,12 +30,19 @@ class SVDPPMI:
             )
 
     def compute_ppmi_matrix(self):
+        epsilon = 1e-8  # petit nombre pour éviter les 0
         total_sum = self.co_occurrence_matrix.sum()
         row_sums = self.co_occurrence_matrix.sum(dim=1, keepdim=True)
         col_sums = self.co_occurrence_matrix.sum(dim=0, keepdim=True)
 
-        ppmi_matrix = torch.log(self.co_occurrence_matrix * total_sum / (row_sums * col_sums))
+        num = self.co_occurrence_matrix * total_sum
+        denom = row_sums * col_sums
+        # Ajoute l'epsilon dans num et denom
+        ppmi_matrix = torch.log((num + epsilon) / (denom + epsilon))
         ppmi_matrix[ppmi_matrix < 0] = 0
+        # Nettoie ce qui reste au cas où (optionnel mais sûr) :
+        ppmi_matrix[torch.isnan(ppmi_matrix)] = 0
+        ppmi_matrix[torch.isinf(ppmi_matrix)] = 0
         return ppmi_matrix
 
     def compute_svd(self, ppmi_matrix):
@@ -51,7 +58,6 @@ class SVDPPMI:
         word_embeddings = self.compute_svd(ppmi_matrix)
         return word_embeddings
 
-    
 # Example usage:
 # dataset = [...]  # Your dataset that yields (batch_size, sequence_length) tensors
 # vocab_size = ...  # The size of your vocabulary
