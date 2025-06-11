@@ -11,7 +11,7 @@ def main():
     vocab_size = 733
 
     # Exemple de dataset avec des indices aléatoires entre 1 et 732
-    batch = torch.randint(1, vocab_size, (batch_size, context_size))
+    batch = torch.randint(0, vocab_size, (batch_size, context_size))
 
     dataset = [batch]  # Envelopper dans une liste comme batch unique (ou plusieurs)
 

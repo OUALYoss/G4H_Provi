@@ -51,7 +51,15 @@ class SVDPPMI:
         word_embeddings = self.compute_svd(ppmi_matrix)
         return word_embeddings
 
-    def run_svd_ppmi(dataset=None, vocab_size=None):
+    
+# Example usage:
+# dataset = [...]  # Your dataset that yields (batch_size, sequence_length) tensors
+# vocab_size = ...  # The size of your vocabulary
+# svd_ppmi = SVDPPMI(vocab_size)
+# embeddings = svd_ppmi.fit(dataset)
+
+
+def run_svd_ppmi(dataset=None, vocab_size=None):
         print(">>> Exécution de SVD_PPMI sur dataset réel")
 
         if dataset is None or vocab_size is None:
@@ -63,8 +71,3 @@ class SVDPPMI:
 
         print(">>> Embeddings générés :")
         print(embeddings)
-# Example usage:
-# dataset = [...]  # Your dataset that yields (batch_size, sequence_length) tensors
-# vocab_size = ...  # The size of your vocabulary
-# svd_ppmi = SVDPPMI(vocab_size)
-# embeddings = svd_ppmi.fit(dataset)
