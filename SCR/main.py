@@ -1,10 +1,11 @@
 import torch
 from SVD_PPMI import run_svd_ppmi
 
+
 def main():
 
     print("Hello la team")
-    
+
     batch_size = 512
     context_size = 94
     vocab_size = 733
