@@ -8,7 +8,7 @@ def main():
 
     batch_size = 512
     context_size = 94
-    vocab_size = 733
+    vocab_size = 732
 
     # Exemple de dataset avec des indices aléatoires entre 1 et 732
     batch = torch.randint(0, vocab_size, (batch_size, context_size))
