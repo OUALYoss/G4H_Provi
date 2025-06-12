@@ -1,5 +1,7 @@
 import torch
 from SVD_PPMI_Optim import SVD_PPMI_OPTI
+from SVD_PPMI import run_svd_ppmi
+import time
 
 
 class Dummydataset:
@@ -17,8 +19,8 @@ class Dummydataset:
             yield torch.randint(0, self.vocab_size, (self.batch_size, self.context_size))
 
 
-
 """def main():
+    start = time.time()
     #Paramètres
     batch_size = 512
     context_size = 94
@@ -28,10 +30,13 @@ class Dummydataset:
     nb_batches = 10000
     dataset = Dummydataset(nb_batches, batch_size, context_size, vocab_size)
 
-    run_svd_ppmi(dataset, vocab_size=vocab_size)"""
+    run_svd_ppmi(dataset, vocab_size=vocab_size)
+    end = time.time()  # Arrête le chronomètre
+    print(f"Durée d'exécution : {end - start:.4f} secondes")"""
 
 
 def main():
+    start = time.time()
     vocab_size = 733
     window_size = 2
     embedding_dim = 100
@@ -39,13 +44,12 @@ def main():
     batch_size = 512
     context_size = 94
     nb_batches = 10000
-    device = 'cuda'  # ou 'cpu' selon ta machine
+    device = 'cuda'  # gpu  NVIDIA Tesla T4
 
-    # Ex : création de 10 000 batches aléatoires pour le test
-    # Remplace cette ligne par tes vrais batches si tu les as déjà
+    # batche
     batches = [torch.randint(0, vocab_size, (batch_size, context_size)) for _ in range(nb_batches)]
-    # Pour un vrai pipeline, tu peux faire: batches = ton_iterateur_ou_liste
-
+    dataset = Dummydataset(nb_batches, batch_size, context_size, vocab_size)
+    # pipeline
     model = SVD_PPMI_OPTI(
         vocab_size=vocab_size,
         window_size=window_size,
@@ -54,8 +58,11 @@ def main():
         device=device
     )
 
-    embeddings = model.fit(batches)
+    embeddings = model.fit(dataset)
     print(embeddings)
+    end = time.time()  # Arrête le chronomètre
+    print(f"Durée d'exécution : {end - start:.4f} secondes")
+
 
 if __name__ == "__main__":
     main()

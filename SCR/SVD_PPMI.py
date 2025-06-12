@@ -66,6 +66,7 @@ class SVDPPMI:
 
 
 def run_svd_ppmi(dataset=None, vocab_size=None):
+    
         print(">>> Exécution de SVD_PPMI sur dataset réel")
 
         if dataset is None or vocab_size is None:
