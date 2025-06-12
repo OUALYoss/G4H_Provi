@@ -38,7 +38,7 @@ def main():
     pad_idx = 0
     batch_size = 512
     context_size = 94
-    nb_batches = 10_000
+    nb_batches = 10000
     device = 'cuda'  # ou 'cpu' selon ta machine
 
     # Ex : création de 10 000 batches aléatoires pour le test
@@ -51,7 +51,7 @@ def main():
         window_size=window_size,
         embedding_dim=embedding_dim,
         pad_idx=pad_idx,
-        device = device
+        device=device
     )
 
     embeddings = model.fit(batches)
