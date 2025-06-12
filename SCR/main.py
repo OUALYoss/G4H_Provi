@@ -19,7 +19,7 @@ class Dummydataset:
             yield torch.randint(0, self.vocab_size, (self.batch_size, self.context_size))
 
 
-"""def main():
+def main():
     start = time.time()
     #Paramètres
     batch_size = 512
@@ -32,10 +32,10 @@ class Dummydataset:
 
     run_svd_ppmi(dataset, vocab_size=vocab_size)
     end = time.time()  # Arrête le chronomètre
-    print(f"Durée d'exécution : {end - start:.4f} secondes")"""
+    print(f"Durée d'exécution : {end - start:.4f} secondes")
 
 
-def main():
+"""def main():
     start = time.time()
     vocab_size = 733
     window_size = 2
@@ -61,7 +61,7 @@ def main():
     embeddings = model.fit(dataset)
     print(embeddings)
     end = time.time()  # Arrête le chronomètre
-    print(f"Durée d'exécution : {end - start:.4f} secondes")
+    print(f"Durée d'exécution : {end - start:.4f} secondes")"""
 
 
 if __name__ == "__main__":
