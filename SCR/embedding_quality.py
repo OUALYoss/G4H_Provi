@@ -42,7 +42,7 @@ def embedding_quality_report(embeddings, method_name="Méthode"):
         print(f"Silhouette score clustering (k={n_clusters}): {sil_score:.4f}")
 
 
-def compare_embeddings_quality(embeddings1, embeddings2, name1="SVD_PPMI_OPTI", name2="SVDPPMI"):
+def compare_embeddings_quality(embeddings1, embeddings2, name1="M1", name2="M2"):
     print("==== COMPARAISON QUALITÉ DES EMBEDDINGS ====")
     embedding_quality_report(embeddings1, method_name=name1)
     embedding_quality_report(embeddings2, method_name=name2)

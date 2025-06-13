@@ -3,6 +3,7 @@ from SVD_PPMI import SVDPPMI
 from embedding_quality import compare_embeddings_quality
 from SVD_PPMI_Optim import SVD_PPMI_OPTI
 import time
+from Kernelized_Unit_Ball_Word_Embedding import *
 
 
 class Dummydataset:
@@ -46,9 +47,38 @@ def main():
     context_size = 94
     nb_batches = 10000
     device = 'cuda'  # gpu  NVIDIA Tesla T4
-
     # batche
     dataset = Dummydataset(nb_batches, batch_size, context_size, vocab_size)
+
+    print("Building cooccurrence matrix...")
+    cooc_matrix = build_cooc_matrix(dataset, vocab_size, window_size, pad_idx, device)
+
+    # -- 2. α-PPMI --
+    print("Computing α-PPMI (aPPMI) matrix...")
+    alpha = 0.75
+    appmi_matrix = appmi_sparse(cooc_matrix, alpha=alpha)
+
+
+
+    #KUBWE
+    # -- 3. KUBE vectorisé --
+    print("Training KUBE embeddings...")
+    embeddings_kube = kube_optimize_vec(
+        appmi_matrix,
+        embedding_dim=embedding_dim,
+        kernel_degree=2,
+        num_iter=50,
+        lr=0.1,
+        unit_ball=True,
+        verbose=True,
+        device=device
+     )
+    end = time.time()  # Arrête le chronomètre
+    print(f"Durée d'exécution de embeddings_kube : {end - start:.4f} secondes")
+
+
+
+    start = time.time()
     # pipeline
     model = SVD_PPMI_OPTI(
         vocab_size=vocab_size,
@@ -73,6 +103,12 @@ def main():
     print(f"Durée d'exécution de embeddings_svdppmi : {end - start:.4f} secondes")
     
     compare_embeddings_quality(embeddings_svd_opti, embeddings_svdppmi)
+    name1 = "embeddings_svd_opti"
+    name2 = "embeddings_kube"
+    name3 = "embeddings_svdppmi"
+    compare_embeddings_quality(embeddings_svd_opti, embeddings_kube, name1=name1, name2=name2)
+    compare_embeddings_quality(embeddings_svdppmi, embeddings_kube, name1=name3, name2=name2)
+
     
 
 if __name__ == "__main__":
