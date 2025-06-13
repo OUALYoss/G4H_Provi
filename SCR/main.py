@@ -1,6 +1,7 @@
 import torch
+from SVD_PPMI import SVDPPMI
+from embedding_quality import compare_embeddings_quality
 from SVD_PPMI_Optim import SVD_PPMI_OPTI
-from SVD_PPMI import run_svd_ppmi
 import time
 
 
@@ -19,7 +20,7 @@ class Dummydataset:
             yield torch.randint(0, self.vocab_size, (self.batch_size, self.context_size))
 
 
-def main():
+"""def main():
     start = time.time()
     #Paramètres
     batch_size = 512
@@ -32,10 +33,10 @@ def main():
 
     run_svd_ppmi(dataset, vocab_size=vocab_size)
     end = time.time()  # Arrête le chronomètre
-    print(f"Durée d'exécution : {end - start:.4f} secondes")
+    print(f"Durée d'exécution : {end - start:.4f} secondes")"""
 
 
-"""def main():
+def main():
     start = time.time()
     vocab_size = 733
     window_size = 2
@@ -47,7 +48,6 @@ def main():
     device = 'cuda'  # gpu  NVIDIA Tesla T4
 
     # batche
-    batches = [torch.randint(0, vocab_size, (batch_size, context_size)) for _ in range(nb_batches)]
     dataset = Dummydataset(nb_batches, batch_size, context_size, vocab_size)
     # pipeline
     model = SVD_PPMI_OPTI(
@@ -58,11 +58,22 @@ def main():
         device=device
     )
 
-    embeddings = model.fit(dataset)
-    print(embeddings)
+    embeddings_svd_opti = model.fit(dataset)
     end = time.time()  # Arrête le chronomètre
-    print(f"Durée d'exécution : {end - start:.4f} secondes")"""
-
+    print(f"Durée d'exécution de embeddings_svd_opti : {end - start:.4f} secondes")
+    start = time.time()
+    model1 = SVDPPMI(
+        vocab_size=vocab_size,
+        window_size=window_size,
+        embedding_dim=embedding_dim,
+        device=device
+    )
+    embeddings_svdppmi = model1.fit(dataset)
+    end = time.time() 
+    print(f"Durée d'exécution de embeddings_svdppmi : {end - start:.4f} secondes")
+    
+    compare_embeddings_quality(embeddings_svd_opti, embeddings_svdppmi)
+    
 
 if __name__ == "__main__":
     main()
