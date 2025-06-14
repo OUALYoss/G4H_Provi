@@ -4,7 +4,7 @@ from tqdm import trange
 def normalize_rows(Y):
     return Y / (Y.norm(dim=1, keepdim=True) + 1e-8)
 
-def polynomial_kernel_mat(Y, degree=2):
+def polynomial_kernel_mat(Y, degree=3):
     # (Y @ Y^T + 1) / 2, puis puissance degree
     S = (Y @ Y.T + 1.0) / 2.0
     return S.pow(degree)
