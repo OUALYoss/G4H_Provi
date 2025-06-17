@@ -129,7 +129,11 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
+.venv/
+git add .gitignore
+git commit -m "Ajout du .venv au .gitignore"
+git push origin ossama
+
 env/
 venv/
 ENV/
