@@ -39,19 +39,18 @@ class Dummydataset:
 
 def main():
     start = time.time()
-    vocab_size = 733
+    vocab_size = 4
     window_size = 2
-    embedding_dim = 100
-    pad_idx = 0
-    batch_size = 512
-    context_size = 94
-    nb_batches = 10000
+    embedding_dim = 5
+    batch_size = 3
+    context_size = 5
+    nb_batches = 1
     device = 'cuda'  # gpu  NVIDIA Tesla T4
     # batche
     dataset = Dummydataset(nb_batches, batch_size, context_size, vocab_size)
 
-    print("Building cooccurrence matrix...")
-    cooc_matrix = build_cooc_matrix(dataset, vocab_size, window_size, pad_idx, device)
+    #print("Building cooccurrence matrix...")
+    """cooc_matrix = build_cooc_matrix(dataset, vocab_size, window_size, pad_idx, device)
 
     # -- 2. α-PPMI --
     print("Computing α-PPMI (aPPMI) matrix...")
@@ -74,7 +73,7 @@ def main():
         device=device
      )
     end = time.time()  # Arrête le chronomètre
-    print(f"Durée d'exécution de embeddings_kube : {end - start:.4f} secondes")
+    print(f"Durée d'exécution de embeddings_kube : {end - start:.4f} secondes")"""
 
 
 
@@ -84,7 +83,6 @@ def main():
         vocab_size=vocab_size,
         window_size=window_size,
         embedding_dim=embedding_dim,
-        pad_idx=pad_idx,
         device=device
     )
 
@@ -92,6 +90,8 @@ def main():
     end = time.time()  # Arrête le chronomètre
     print(f"Durée d'exécution de embeddings_svd_opti : {end - start:.4f} secondes")
     start = time.time()
+
+    """
     model1 = SVDPPMI(
         vocab_size=vocab_size,
         window_size=window_size,
@@ -107,7 +107,7 @@ def main():
     name2 = "embeddings_kube"
     name3 = "embeddings_svdppmi"
     compare_embeddings_quality(embeddings_svd_opti, embeddings_kube, name1=name1, name2=name2)
-    compare_embeddings_quality(embeddings_svdppmi, embeddings_kube, name1=name3, name2=name2)
+    compare_embeddings_quality(embeddings_svdppmi, embeddings_kube, name1=name3, name2=name2)"""
 
     
 

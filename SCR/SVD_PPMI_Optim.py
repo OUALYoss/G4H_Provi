@@ -2,11 +2,11 @@ import torch
 
 
 class SVD_PPMI_OPTI:
-    def __init__(self, vocab_size, window_size=2, embedding_dim=100, pad_idx=0, device='cuda'):
+    def __init__(self, vocab_size, window_size=2, embedding_dim=100, device='cuda'):
         self.vocab_size = vocab_size
         self.window_size = window_size
         self.embedding_dim = embedding_dim
-        self.pad_idx = pad_idx
+        self.pad_idx = vocab_size+1
         self.device = torch.device(device if torch.cuda.is_available() else 'cpu')
         self.embeddings = None
 
@@ -16,6 +16,7 @@ class SVD_PPMI_OPTI:
 
         for batch in batch_iterable:  # ***SEULE BOUCLE***
             batch = batch.to(self.device)  # (batch_size, context_size)
+            print("batch ", batch)
             mask = (batch != self.pad_idx)
             for offset in offsets:
                 # Décalage contextuel
@@ -51,6 +52,7 @@ class SVD_PPMI_OPTI:
     def fit(self, batch_iterable):
         print(">> Calcul de la matrice de cooccurrence ...")
         cooc = self.compute_cooccurrence_matrix(batch_iterable)
+        print("coocureence ", cooc)
         print(">> Calcul de la matrice PPMI ...")
         ppmi = self.compute_ppmi_matrix(cooc)
         print(">> Calcul SVD pour les embeddings ...")
