@@ -1,5 +1,6 @@
 import torch
 from SVD_PPMI import SVDPPMI
+from SVD_PPMI_Nadi import SVD_PPMI_OPTIMA
 from embedding_quality import compare_embeddings_quality
 from SVD_PPMI_Optim import SVD_PPMI_OPTI
 import time
@@ -40,7 +41,7 @@ class Dummydataset:
 def main():
     start = time.time()
     vocab_size = 4
-    window_size = 2
+    window_size = 1
     embedding_dim = 5
     batch_size = 3
     context_size = 5
@@ -79,7 +80,7 @@ def main():
 
     start = time.time()
     # pipeline
-    model = SVD_PPMI_OPTI(
+    model = SVD_PPMI_OPTIMA(
         vocab_size=vocab_size,
         window_size=window_size,
         embedding_dim=embedding_dim,

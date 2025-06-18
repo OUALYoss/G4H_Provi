@@ -1,7 +1,7 @@
 import torch
 
 
-class SVD_PPMI_OPTI:
+class SVD_PPMI_OPTIMA:
     def __init__(self, vocab_size, window_size=2, embedding_dim=100, device='cpu'):
         self.vocab_size = vocab_size
         self.window_size = window_size
@@ -16,7 +16,7 @@ class SVD_PPMI_OPTI:
         for batch in dataset:
             batch = batch.to(self.device)
             cp += 1
-            print("batch " + str(cp), batch)
+            print("batch "+str(cp), batch)
             B, L = batch.shape
 
             for offset in range(1, self.window_size + 1):
@@ -33,7 +33,8 @@ class SVD_PPMI_OPTI:
 
         all_tokens = torch.cat(total_flat_tokens)
         counts = torch.bincount(all_tokens, minlength=self.vocab_size)
-        cooc[range(self.vocab_size), range(self.vocab_size)] = counts.float()
+        cooc[range(self.vocab_size), range(self.vocab_size)] = counts.float()  # <-- correction ici
+
         return cooc
 
     def ppmi_matrix(self, cooc):
