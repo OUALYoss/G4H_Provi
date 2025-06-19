@@ -87,6 +87,11 @@ def main():
     print("Decayedcounting ", gcount.transform(dataset))
     C0 = features[:, :vocab_size]
     Cdelta = features[:, vocab_size:]
+
+    #prblm avec le device
+    device = embeddings_svd_opti.device  # le device des embeddings
+    C0 = C0.to(device)
+    Cdelta = Cdelta.to(device)
     features_gemb_local = aggregate_with_embeddings(C0, Cdelta, embeddings_svd_opti)
     print("Shape features_gemb_local:", features_gemb_local.shape)
 

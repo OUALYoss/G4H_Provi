@@ -2,7 +2,7 @@ import torch
 
 
 class SVD_PPMI_OPTIMA:
-    def __init__(self, vocab_size, window_size=2, embedding_dim=100, device='cpu'):
+    def __init__(self, vocab_size, window_size=2, embedding_dim=100, device='cuda'):
         self.vocab_size = vocab_size
         self.window_size = window_size
         self.embedding_dim = embedding_dim
