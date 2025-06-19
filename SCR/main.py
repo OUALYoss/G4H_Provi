@@ -70,7 +70,7 @@ def main():
     delta = 2 #par exemple
     gcount = GCount(vocab_size, delta, device)
 
-    print("Decayedcounting ", gcount(dataset))
+    print("Decayedcounting ", gcount.transform(dataset))
 
 
 

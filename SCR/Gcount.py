@@ -1,41 +1,57 @@
 import torch
 
-
 class GCount:
     """
-    Calcule les features [C0, Cδ] pour un batch de séquences d'indices.
-    - C0 : comptage brut
-    - Cδ : comptage décayé exponentiel, base e, demi-vie delta
+    Calcule les features [C0, Cδ] pour tous les batchs d'un dataset.
+    Utilisation :
+        gcount = GCount(vocab_size=..., delta=..., device=...)
+        features = gcount.transform(dataset)
     """
-    def __init__(self, vocab_size, delta, device='cpu'):
+    def __init__(self, vocab_size, delta=2.0, device='cpu'):
         self.vocab_size = vocab_size
         self.delta = delta
         self.device = device
 
-    def __call__(self, batch):
+    def _features_single_batch(self, batch):
         """
-        batch: Tensor shape (batch_size, context_size) d'indices de tokens
-        Retourne: Tensor shape (batch_size, 2 * vocab_size)
+        Calcule [C0, Cδ] pour chaque séquence d’un batch.
+        - batch : (batch_size, context_size), indices de tokens
+        Retour : (batch_size, 2 * vocab_size)
         """
         batch = batch.to(self.device)
         batch_size, context_size = batch.shape
 
-        # One-hot encoding : (batch_size, context_size, vocab_size)
+        # Encodage one-hot pour compter facilement chaque token
         one_hot = torch.nn.functional.one_hot(batch, num_classes=self.vocab_size).float()
 
-        # --- Comptage brut C0
-        C0 = one_hot.sum(dim=1)  # (batch_size, vocab_size)
+        # Comptage brut
+        C0 = one_hot.sum(dim=1)
 
-        # --- Comptage décayé Cδ
-        # Δt : [context_size-1, ..., 0] (dernier événement = t=0)
-        positions = torch.arange(context_size, device=self.device)
-        deltas = (context_size - 1) - positions  # (context_size, )
-        decay_factors = torch.exp(-deltas.float() / self.delta)  # (context_size,)
-        decay_factors = decay_factors.view(1, context_size, 1)  # broadcast
+        # Facteur de décay exponentiel pour chaque position (dernier=0)
+        deltas = torch.arange(context_size - 1, -1, -1, device=self.device)
+        print("les deltas t  ∆t ", deltas)
+        decay_factors = torch.exp(-deltas.float() / self.delta).view(1, context_size, 1)
+        print("le decay ", decay_factors)
 
-        weighted_one_hot = one_hot * decay_factors  # (batch_size, context_size, vocab_size)
-        Cdelta = weighted_one_hot.sum(dim=1)  # (batch_size, vocab_size)
+        # Comptage décayé
+        weighted_one_hot = one_hot * decay_factors
+        Cdelta = weighted_one_hot.sum(dim=1)
 
-        # --- Concatenation
-        features = torch.cat([C0, Cdelta], dim=1)  # (batch_size, 2*vocab_size)
+        # On concatène [C0, Cδ] pour chaque séquence du batch
+        features = torch.cat([C0, Cdelta], dim=1)
         return features
+
+    def transform(self, dataset):
+        """
+        Traite tout le dataset (itérable sur les batchs).
+        Retourne un tensor de shape (nb_sequences_total, 2 * vocab_size)
+        """
+        all_features = []
+        for batch in dataset:
+            print("batch ", batch)
+            features = self._features_single_batch(batch)
+            all_features.append(features.cpu())
+        if all_features:
+            return torch.cat(all_features, dim=0)
+        else:
+            return torch.empty(0, 2 * self.vocab_size)
