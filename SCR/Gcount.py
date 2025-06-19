@@ -23,9 +23,11 @@ class GCount:
 
         # Encodage one-hot pour compter facilement chaque token
         one_hot = torch.nn.functional.one_hot(batch, num_classes=self.vocab_size).float()
+        print(one_hot)
 
         # Comptage brut
         C0 = one_hot.sum(dim=1)
+        print("C0 ", C0)
 
         # Facteur de décay exponentiel pour chaque position (dernier=0)
         deltas = torch.arange(context_size - 1, -1, -1, device=self.device)
@@ -35,6 +37,7 @@ class GCount:
 
         # Comptage décayé
         weighted_one_hot = one_hot * decay_factors
+        print(weighted_one_hot)
         Cdelta = weighted_one_hot.sum(dim=1)
 
         # On concatène [C0, Cδ] pour chaque séquence du batch
