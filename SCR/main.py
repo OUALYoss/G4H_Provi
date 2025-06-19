@@ -22,6 +22,20 @@ class Dummydataset:
             yield torch.randint(0, self.vocab_size, (self.batch_size, self.context_size))
 
 
+def aggregate_with_embeddings(C0, Cdelta, phi):
+    """
+    Agrège les features C0 et Cδ par multiplication avec les embeddings phi.
+    C0, Cdelta : tensors shape (n, vocab_size)
+    phi : tensor shape (vocab_size, embedding_dim)
+    Retour : tensor shape (n, 2 * embedding_dim)
+    """
+    agg_C0 = C0 @ phi          # (n, embedding_dim)
+    agg_Cdelta = Cdelta @ phi  # (n, embedding_dim)
+    return torch.cat([agg_C0, agg_Cdelta], dim=1)
+
+
+
+
 """def main():
     start = time.time()
     #Paramètres
@@ -69,8 +83,12 @@ def main():
 
     delta = 2 #par exemple
     gcount = GCount(vocab_size, delta, device)
-
+    features = gcount.transform(dataset)
     print("Decayedcounting ", gcount.transform(dataset))
+    C0 = features[:, :vocab_size]
+    Cdelta = features[:, vocab_size:]
+    features_gemb_local = aggregate_with_embeddings(C0, Cdelta, embeddings_svd_opti)
+    print("Shape features_gemb_local:", features_gemb_local.shape)
 
 
 
