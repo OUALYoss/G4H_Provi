@@ -1,7 +1,6 @@
 import torch
 from SVD_PPMI import SVDPPMI
 from SVD_PPMI_Nadi import SVD_PPMI_OPTIMA
-from embedding_quality import compare_embeddings_quality
 from SVD_PPMI_Optim import SVD_PPMI_OPTI
 import time
 from Kernelized_Unit_Ball_Word_Embedding import *
