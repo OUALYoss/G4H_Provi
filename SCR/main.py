@@ -1,6 +1,7 @@
 import torch
 from SVD_PPMI import SVDPPMI
 from SVD_PPMI_Nadi import SVD_PPMI_OPTIMA
+from Gcount import GCount
 from SVD_PPMI_Optim import SVD_PPMI_OPTI
 import time
 from Kernelized_Unit_Ball_Word_Embedding import *
@@ -46,8 +47,35 @@ def main():
     context_size = 5
     nb_batches = 1
     device = 'cuda'  # gpu  NVIDIA Tesla T4
+
     # batche
     dataset = Dummydataset(nb_batches, batch_size, context_size, vocab_size)
+    start = time.time()
+    # pipeline
+    model = SVD_PPMI_OPTIMA(
+        vocab_size=vocab_size,
+        window_size=window_size,
+        embedding_dim=embedding_dim,
+        device=device
+    )
+
+    embeddings_svd_opti = model.fit(dataset)
+    end = time.time()  # Arrête le chronomètre
+    print(f"Durée d'exécution de embeddings_svd_opti : {end - start:.4f} secondes")
+    start = time.time()
+
+    print("-------------------------------------------------------------------------")
+    print("Gcount delay")
+
+    delta = 2 #par exemple
+    gcount = GCount(vocab_size, delta, device)
+
+    print("Decayedcounting ", gcount(dataset))
+
+
+
+
+
 
     #print("Building cooccurrence matrix...")
     """cooc_matrix = build_cooc_matrix(dataset, vocab_size, window_size, pad_idx, device)
@@ -74,23 +102,6 @@ def main():
      )
     end = time.time()  # Arrête le chronomètre
     print(f"Durée d'exécution de embeddings_kube : {end - start:.4f} secondes")"""
-
-
-
-    start = time.time()
-    # pipeline
-    model = SVD_PPMI_OPTIMA(
-        vocab_size=vocab_size,
-        window_size=window_size,
-        embedding_dim=embedding_dim,
-        device=device
-    )
-
-    embeddings_svd_opti = model.fit(dataset)
-    end = time.time()  # Arrête le chronomètre
-    print(f"Durée d'exécution de embeddings_svd_opti : {end - start:.4f} secondes")
-    start = time.time()
-
     """
     model1 = SVDPPMI(
         vocab_size=vocab_size,
