@@ -13,7 +13,7 @@ class GCount:
         self.delta = delta
         self.device = device
 
-    def _features_single_batch(self, dataset):
+    def transform(self, dataset):
         """
         Calcule [C0, Cδ] pour chaque séquence d’un batch.
         - batch : (batch_size, context_size), indices de tokens
@@ -46,6 +46,7 @@ class GCount:
 
         # On concatène [C0, Cδ] pour chaque séquence du batch
             features = torch.cat([C0, Cdelta], dim=1)
+            print("gcount embe ", features)
 
         all_features.append(features.to(self.device))
 
