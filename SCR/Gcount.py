@@ -8,7 +8,7 @@ class GCount:
         gcount = GCount(vocab_size=..., delta=..., device=...)
         features = gcount.transform(dataset)
     """
-    def __init__(self, vocab_size, delta=2.0, device='cuda'):
+    def __init__(self, vocab_size, delta, device='cuda'):
         self.vocab_size = vocab_size
         self.delta = delta
         self.device = device
