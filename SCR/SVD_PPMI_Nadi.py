@@ -31,9 +31,9 @@ class SVD_PPMI_OPTIMA:
 
             total_flat_tokens.append(batch.flatten())
 
-        all_tokens = torch.cat(total_flat_tokens)
-        counts = torch.bincount(all_tokens, minlength=self.vocab_size)
-        cooc[range(self.vocab_size), range(self.vocab_size)] = counts.float()  # <-- correction ici
+        all_tokens = torch.cat(total_flat_tokens)  # concatèner dans un seul gros tableau 1D.
+        counts = torch.bincount(all_tokens, minlength=self.vocab_size) # counts[i] = nombre d’apparitions du mot i dans tout le corpus.
+        cooc[range(self.vocab_size), range(self.vocab_size)] = counts.float()  # (M(i,i)) par le count  du mot i
 
         return cooc
 
