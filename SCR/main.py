@@ -61,7 +61,8 @@ def main():
     context_size = 5
     nb_batches = 1
     device = 'cuda'  # gpu  NVIDIA Tesla T4
-
+    print("____________________________________________________________________________________")
+    print("SVD PPMI OPTIM")
     # batche
     dataset = Dummydataset(nb_batches, batch_size, context_size, vocab_size)
     start = time.time()
@@ -84,10 +85,12 @@ def main():
     delta = 2 #par exemple
     gcount = GCount(vocab_size, delta, device)
     features = gcount.transform(dataset)
-    print("Decayedcounting ", gcount.transform(dataset))
+
+
+    print("______________________________________________________________________")
+    print("gemb_local")
     C0 = features[:, :vocab_size]
     Cdelta = features[:, vocab_size:]
-
     #prblm avec le device
     device = embeddings_svd_opti.device  # le device des embeddings
     C0 = C0.to(device)
