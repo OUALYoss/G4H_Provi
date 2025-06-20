@@ -93,7 +93,7 @@ def main():
     C0 = C0.to(device)
     Cdelta = Cdelta.to(device)
     features_gemb_local = aggregate_with_embeddings(C0, Cdelta, embeddings_svd_opti)
-    print("Shape features_gemb_local:", features_gemb_local.shape)
+    print(" features_gemb_local:", features_gemb_local)
 
 
 

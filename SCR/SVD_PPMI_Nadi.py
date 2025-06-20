@@ -38,18 +38,21 @@ class SVD_PPMI_OPTIMA:
         return cooc
 
     def ppmi_matrix(self, cooc):
-        total = cooc.sum()
-        sum_over_rows = cooc.sum(dim=1, keepdim=True)
+        total = cooc.sum()  #N
+        sum_over_rows = cooc.sum(dim=1, keepdim=True) 
         sum_over_cols = cooc.sum(dim=0, keepdim=True)
         expected = sum_over_rows @ sum_over_cols / total.clamp_min(1e-8)
-        ppmi = torch.log((cooc * total + 1e-8) / (expected + 1e-8))
-        ppmi = torch.clamp(ppmi, min=0)
+        ppmi = torch.log((cooc + 1e-8) / (expected + 1e-8))
+        ppmi = torch.clamp(ppmi, min=0)# Transforme la PMI en PPMI 
         ppmi[torch.isnan(ppmi)] = 0
         return ppmi
 
     def svd_embeddings(self, ppmi):
-        U, S, Vh = torch.linalg.svd(ppmi, full_matrices=False)
-        emb = U[:, :self.embedding_dim] * S[:self.embedding_dim].unsqueeze(0)
+        # U matrice ortho
+        # S vecteur des valeurs singulières
+        # Vh matrice diag
+        U, S, Vh = torch.linalg.svd(ppmi, full_matrices=False) 
+        emb = U[:, :self.embedding_dim] * S[:self.embedding_dim].unsqueeze(0)  # Φ[i,j]=U[i,j]⋅S[j]
         return emb
 
     def fit(self, dataset):
